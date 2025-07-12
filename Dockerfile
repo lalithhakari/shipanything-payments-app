@@ -36,6 +36,10 @@ WORKDIR /var/www/html
 # Copy Laravel application
 COPY . .
 
+
+# Ensure .env exists
+RUN if [ ! -f .env ] && [ -f .env.example ]; then cp .env.example .env; fi
+
 # Install dependencies
 RUN composer install --no-dev --optimize-autoloader
 
