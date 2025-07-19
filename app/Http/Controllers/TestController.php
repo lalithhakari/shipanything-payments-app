@@ -18,6 +18,16 @@ class TestController extends Controller
         Cache::put('test_cache', 'This is a test value');
         Redis::set('test_redis', 'This is a test value');
 
+        // create test table if it doesn't exist
+        if (!DB::getSchemaBuilder()->hasTable('test')) {
+            DB::getSchemaBuilder()->create('test', function ($table) {
+                $table->id();
+                $table->string('name')->default('Test Name');
+                $table->timestamps();
+            });
+            // Insert a default row for testing
+            DB::table('test')->insert(['name' => 'Initial Test Name']);
+        }
         $dbRow = DB::table('test')->first();
 
         return response()->json([
